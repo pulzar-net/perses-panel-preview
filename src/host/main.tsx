@@ -42,6 +42,8 @@ const FONT = 'Inter, sans-serif';
 // Charts draw their first frame at once instead of animating towards it.
 echarts.registerPreprocessor((option: any) => {
   option.animation = false;
+  // Canvas text has no CSS to inherit from: without this a chart that sets no font draws in the system's.
+  option.textStyle = { fontFamily: FONT, ...option.textStyle };
 });
 
 /** What a sample's series become: Perses's TimeSeriesData. */
@@ -204,11 +206,13 @@ document.body.style.background = theme.palette.background.default;
 // The panel fills the frame exactly, whatever the grid's rows come to.
 const style = document.createElement('style');
 style.textContent = `
-  html, body { margin: 0; padding: 0; overflow: hidden; }
+  html, body { margin: 0; padding: 0; overflow: hidden; font-family: ${FONT}; }
   #frame { width: ${input.width}px; height: ${height}px; overflow: hidden; }
   #frame .snapgrid.layout { margin-top: -10px; }
   #frame .react-grid-item { width: ${input.width}px !important; transform: none !important; inset: 0 !important; }
   *, *::before, *::after { animation: none !important; transition: none !important; caret-color: transparent !important; }
 `;
 document.head.append(style);
+// Canvas text uses a font only once it is loaded, and nothing in the DOM asks for every weight.
+await Promise.all(['400', '500', '600', '700'].map((weight) => document.fonts.load(`${weight} 12px Inter`)));
 createRoot(document.getElementById('root')!).render(<App />);
