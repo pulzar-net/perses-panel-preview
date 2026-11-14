@@ -1,0 +1,1 @@
+{ "name": "@fixture/preview-panel", "version": "1.0.0", "perses": { "plugins": [{ "kind": "Panel", "spec": { "name": "FixtureBarsPanel" } }, { "kind": "Panel", "spec": { "name": "FixtureThrowsPanel" } }, { "kind": "Panel", "spec": { "name": "FixtureBlankPanel" } }] } }

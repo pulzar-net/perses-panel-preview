@@ -1,0 +1,86 @@
+name: Perses panel preview
+description: Render a sample image of a Perses panel plugin, light and dark, from mocked query results. No network or Perses server.
+author: Pulzar
+branding:
+  icon: image
+  color: gray-dark
+
+inputs:
+  plugin-dir:
+    description: The built plugin: the folder holding lib/index.js (a plugin's dist/), or the repository root when dist/lib/index.js exists.
+    default: .
+  sample:
+    description: The sample file, in the calling repository. See sample.schema.json.
+    default: preview/sample.json
+  width:
+    description: Image width in CSS pixels (the PNG is twice that).
+    default: '900'
+  height:
+    description: Image height in CSS pixels, rounded up to Perses's grid (40n - 10).
+    default: '350'
+  themes:
+    description: Comma-separated, light and/or dark. One preview-<theme>.png each.
+    default: light,dark
+  output-dir:
+    description: Where the PNGs are written.
+    default: .
+
+outputs:
+  files:
+    description: The PNGs written, one path per line.
+    value: ${{ steps.render.outputs.files }}
+
+runs:
+  using: composite
+  steps:
+    - uses: actions/setup-node@v4
+      with:
+        node-version: 24
+
+    - name: Cache key
+      id: key
+      shell: bash
+      run: echo "hash=$(sha256sum "$GITHUB_ACTION_PATH/package-lock.json" | cut -c1-16)" >> "$GITHUB_OUTPUT"
+
+    # Perses's packages and Chromium, restored whole: a render then installs nothing.
+    - uses: actions/cache@v4
+      id: cache
+      with:
+        path: |
+          ${{ github.action_path }}/node_modules
+          ${{ runner.temp }}/pw-browsers
+        key: perses-panel-preview-${{ runner.os }}-${{ steps.key.outputs.hash }}
+
+    - name: Install
+      shell: bash
+      env:
+        PLAYWRIGHT_BROWSERS_PATH: ${{ runner.temp }}/pw-browsers
+      run: |
+        cd "$GITHUB_ACTION_PATH"
+        if [ "${{ steps.cache.outputs.cache-hit }}" != "true" ]; then
+          npm ci --ignore-scripts --no-audit --no-fund
+          npx playwright install chromium
+        fi
+        # The system libraries are not part of the cache.
+        if [ "$RUNNER_OS" = "Linux" ]; then npx playwright install-deps chromium; fi
+
+    - name: Render
+      id: render
+      shell: bash
+      env:
+        PLAYWRIGHT_BROWSERS_PATH: ${{ runner.temp }}/pw-browsers
+        PLUGIN_DIR: ${{ inputs.plugin-dir }}
+        SAMPLE: ${{ inputs.sample }}
+        WIDTH: ${{ inputs.width }}
+        HEIGHT: ${{ inputs.height }}
+        THEMES: ${{ inputs.themes }}
+        OUTPUT_DIR: ${{ inputs.output-dir }}
+      run: |
+        node "$GITHUB_ACTION_PATH/src/render.mjs" \
+          --plugin-dir "$PLUGIN_DIR" --sample "$SAMPLE" --width "$WIDTH" --height "$HEIGHT" \
+          --themes "$THEMES" --output-dir "$OUTPUT_DIR" | tee "$RUNNER_TEMP/render.log"
+        {
+          echo "files<<EOF"
+          sed -n 's/^wrote \([^ ]*\) .*/\1/p' "$RUNNER_TEMP/render.log"
+          echo "EOF"
+        } >> "$GITHUB_OUTPUT"

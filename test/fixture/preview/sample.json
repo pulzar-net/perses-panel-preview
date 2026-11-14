@@ -1,0 +1,51 @@
+{
+ "timeRange": {
+  "start": "2026-01-14T00:00:00Z",
+  "end": "2026-01-15T00:00:00Z"
+ },
+ "panel": {
+  "kind": "Panel",
+  "spec": {
+   "display": {
+    "name": "Fixture bars"
+   },
+   "plugin": {
+    "kind": "FixtureBarsPanel",
+    "spec": {}
+   }
+  }
+ },
+ "queries": [
+  {
+   "series": [
+    {
+     "name": "North",
+     "points": [
+      3,
+      5,
+      8,
+      13
+     ]
+    },
+    {
+     "name": "South",
+     "points": [
+      2,
+      4,
+      6,
+      9
+     ]
+    },
+    {
+     "name": "East",
+     "points": [
+      1,
+      2,
+      3,
+      4
+     ]
+    }
+   ]
+  }
+ ]
+}

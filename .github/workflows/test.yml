@@ -1,0 +1,45 @@
+name: Test
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+jobs:
+  unit:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: npm
+      - run: npm ci --ignore-scripts
+      - uses: actions/cache@v4
+        with:
+          path: ~/.cache/ms-playwright
+          key: playwright-${{ runner.os }}-${{ hashFiles('package-lock.json') }}
+      - run: npx playwright install chromium
+      - run: npx playwright install-deps chromium
+      - run: npm test
+
+  # The action itself, as a caller uses it, on a plugin that needs no build.
+  action:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - id: preview
+        uses: ./
+        with:
+          plugin-dir: test/fixture
+          sample: test/fixture/preview/sample.json
+          width: '600'
+          height: '230'
+          output-dir: out
+      - run: |
+          echo "${{ steps.preview.outputs.files }}"
+          test -s out/preview-light.png && test -s out/preview-dark.png
+      - uses: actions/upload-artifact@v4
+        with:
+          name: fixture-preview
+          path: out/*.png
