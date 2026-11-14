@@ -7,27 +7,27 @@ branding:
 
 inputs:
   plugin-dir:
-    description: The built plugin: the folder holding lib/index.js (a plugin's dist/), or the repository root when dist/lib/index.js exists.
+    description: "The built plugin: the folder holding lib/index.js (a plugin's dist/), or the repository root when dist/lib/index.js exists."
     default: .
   sample:
-    description: The sample file, in the calling repository. See sample.schema.json.
+    description: "The sample file, in the calling repository. See sample.schema.json."
     default: preview/sample.json
   width:
-    description: Image width in CSS pixels (the PNG is twice that).
+    description: "Image width in CSS pixels (the PNG is twice that)."
     default: '900'
   height:
-    description: Image height in CSS pixels, rounded up to Perses's grid (40n - 10).
+    description: "Image height in CSS pixels, rounded up to Perses's grid (40n - 10)."
     default: '350'
   themes:
-    description: Comma-separated, light and/or dark. One preview-<theme>.png each.
+    description: "Comma-separated, light and/or dark. One preview-<theme>.png each."
     default: light,dark
   output-dir:
-    description: Where the PNGs are written.
+    description: "Where the PNGs are written."
     default: .
 
 outputs:
   files:
-    description: The PNGs written, one path per line.
+    description: "The PNGs written, one path per line."
     value: ${{ steps.render.outputs.files }}
 
 runs:
