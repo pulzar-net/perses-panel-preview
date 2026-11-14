@@ -206,7 +206,7 @@ if (process.argv[1] && resolve(process.argv[1]) === fileURLToPath(import.meta.ur
       'output-dir': { type: 'string', default: '.' },
     },
   });
-  const size = (name, v) => (Number.isInteger(+v) && +v >= 200 && +v <= 4000 ? +v : fail(`${name} is a whole number of pixels from 200 to 4000, not "${v}"`));
+  const size = (name, v) => (Number.isInteger(+v) && +v >= 100 && +v <= 4000 ? +v : fail(`${name} is a whole number of pixels from 100 to 4000, not "${v}"`));
   await render({
     pluginDir: values['plugin-dir'],
     samplePath: values.sample,
