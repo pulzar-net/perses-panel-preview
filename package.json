@@ -6,7 +6,7 @@
   "license": "Apache-2.0",
   "type": "module",
   "engines": { "node": ">=22" },
-  "scripts": { "test": "node --test test/" },
+  "scripts": { "test": "node --test test/*.test.mjs" },
   "dependencies": {
     "@emotion/react": "11.14.0",
     "@emotion/styled": "11.14.1",
