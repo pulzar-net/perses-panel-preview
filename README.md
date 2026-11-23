@@ -57,7 +57,7 @@ Output `files`: the paths written, one per line.
 
 ### Versions
 
-The action pins the Perses packages the Pulzar panel repos build against (`@perses-dev/*` 0.56.0-beta.1, React 18.3, MUI 6.5, ECharts 6.1). A plugin is bundled against that one copy of each, as Perses's module federation shares them, so a plugin built for another Perses may need a release of this action pinned to it. Use `@v1`, or an exact tag.
+The action pins the Perses packages the Pulzr panel repos build against (`@perses-dev/*` 0.56.0-beta.1, React 18.3, MUI 6.5, ECharts 6.1). A plugin is bundled against that one copy of each, as Perses's module federation shares them, so a plugin built for another Perses may need a release of this action pinned to it. Use `@v1`, or an exact tag.
 
 ## The sample file
 
